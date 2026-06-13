@@ -63,6 +63,7 @@ from sklearn.preprocessing import MinMaxScaler, OneHotEncoder, OrdinalEncoder, R
 RANDOM_STATE = 42
 DATA_URL = "https://archive.ics.uci.edu/static/public/2/adult.zip"
 DATASET_PAGE = "https://archive.ics.uci.edu/dataset/2/adult"
+SOURCE_CODE_URL = "https://github.com/sharkless-web/adult-income-feature-engineering"
 
 COLUMNS = [
     "age",
@@ -881,7 +882,7 @@ def build_report(
         )
     )
     story.append(Paragraph(f"공식 출처: {DATASET_PAGE}", body))
-    story.append(Paragraph(f"소스 코드 위치: {project_root / 'src' / 'adult_feature_engineering_pipeline.py'}", body))
+    story.append(Paragraph(f"소스 코드 GitHub: {SOURCE_CODE_URL}", body))
     story.append(Spacer(1, 0.3 * cm))
 
     story.append(Paragraph("1. 데이터셋 소개", styles["KHeading"]))
