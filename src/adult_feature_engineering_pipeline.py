@@ -65,6 +65,8 @@ RANDOM_STATE = 42
 DATA_URL = "https://archive.ics.uci.edu/static/public/2/adult.zip"
 DATASET_PAGE = "https://archive.ics.uci.edu/dataset/2/adult"
 SOURCE_CODE_URL = "https://github.com/sharkless-web/adult-income-feature-engineering"
+STUDENT_ID = "2353913"
+STUDENT_NAME = "황수영"
 SUIT_REGULAR_URL = "https://raw.githubusercontent.com/sun-typeface/SUIT/main/fonts/static/ttf/SUIT-Regular.ttf"
 SUIT_BOLD_URL = "https://raw.githubusercontent.com/sun-typeface/SUIT/main/fonts/static/ttf/SUIT-Bold.ttf"
 
@@ -906,6 +908,7 @@ def build_report(
     )
     story.append(Paragraph(f"공식 출처: {DATASET_PAGE}", body))
     story.append(Paragraph(f"소스 코드 GitHub: {SOURCE_CODE_URL}", body))
+    story.append(Paragraph(f"학번: {STUDENT_ID} / 이름: {STUDENT_NAME}", body))
     story.append(Spacer(1, 0.3 * cm))
 
     story.append(Paragraph("1. 데이터셋 소개", styles["KHeading"]))
