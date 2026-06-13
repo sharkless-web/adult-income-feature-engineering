@@ -42,6 +42,7 @@ from reportlab.platypus import (
 )
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+from reportlab.pdfbase.ttfonts import TTFont
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.feature_selection import SelectKBest, f_classif
@@ -64,6 +65,8 @@ RANDOM_STATE = 42
 DATA_URL = "https://archive.ics.uci.edu/static/public/2/adult.zip"
 DATASET_PAGE = "https://archive.ics.uci.edu/dataset/2/adult"
 SOURCE_CODE_URL = "https://github.com/sharkless-web/adult-income-feature-engineering"
+SUIT_REGULAR_URL = "https://raw.githubusercontent.com/sun-typeface/SUIT/main/fonts/static/ttf/SUIT-Regular.ttf"
+SUIT_BOLD_URL = "https://raw.githubusercontent.com/sun-typeface/SUIT/main/fonts/static/ttf/SUIT-Bold.ttf"
 
 COLUMNS = [
     "age",
@@ -160,6 +163,7 @@ def parse_args() -> argparse.Namespace:
 def ensure_dirs(project_root: Path) -> dict[str, Path]:
     paths = {
         "data_raw": project_root / "data" / "raw",
+        "fonts": project_root / "assets" / "fonts",
         "figures": project_root / "outputs" / "figures",
         "tables": project_root / "outputs" / "tables",
         "outputs": project_root / "outputs",
@@ -799,7 +803,26 @@ def add_image(story: list[Any], path: Path, width_cm: float = 16.2) -> None:
     story.append(Spacer(1, 0.35 * cm))
 
 
-def register_pdf_fonts() -> tuple[str, str]:
+def ensure_suit_fonts(project_root: Path) -> tuple[Path, Path]:
+    fonts_dir = project_root / "assets" / "fonts"
+    fonts_dir.mkdir(parents=True, exist_ok=True)
+    regular_path = fonts_dir / "SUIT-Regular.ttf"
+    bold_path = fonts_dir / "SUIT-Bold.ttf"
+    if not regular_path.exists():
+        urllib.request.urlretrieve(SUIT_REGULAR_URL, regular_path)
+    if not bold_path.exists():
+        urllib.request.urlretrieve(SUIT_BOLD_URL, bold_path)
+    return regular_path, bold_path
+
+
+def register_pdf_fonts(project_root: Path) -> tuple[str, str]:
+    try:
+        regular_path, bold_path = ensure_suit_fonts(project_root)
+        pdfmetrics.registerFont(TTFont("SUIT", str(regular_path)))
+        pdfmetrics.registerFont(TTFont("SUIT-Bold", str(bold_path)))
+        return "SUIT-Bold", "SUIT"
+    except Exception as exc:
+        print(f"SUIT font registration failed, falling back to CID fonts: {exc}")
     try:
         pdfmetrics.registerFont(UnicodeCIDFont("HYGothic-Medium"))
         pdfmetrics.registerFont(UnicodeCIDFont("HYSMyeongJo-Medium"))
@@ -829,7 +852,7 @@ def build_report(
     tables_dir = outputs_dir / "tables"
     report_path = outputs_dir / "adult_income_feature_engineering_report.pdf"
 
-    title_font, body_font = register_pdf_fonts()
+    title_font, body_font = register_pdf_fonts(project_root)
     styles = getSampleStyleSheet()
     styles.add(
         ParagraphStyle(
