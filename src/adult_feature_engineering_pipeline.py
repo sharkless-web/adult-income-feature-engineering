@@ -995,7 +995,7 @@ def build_report(
     add_table(story, table_for_pdf(top_features, max_rows=12), small, [10.0 * cm, 4.0 * cm])
     add_image(story, figures_dir / "rf_top_feature_importance.png")
 
-    story.append(Paragraph("7. GridSearchCV 가산점 실험", styles["KHeading"]))
+    story.append(Paragraph("7. GridSearchCV 적용", styles["KHeading"]))
     add_table(story, table_for_pdf(grid_summary, max_rows=3), small)
     story.append(
         Paragraph(
